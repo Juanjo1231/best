@@ -12,6 +12,8 @@ import TabBar from './components/TabBar.vue'
 import OverallStatsTab from './components/OverallStatsTab.vue'
 import SiteTable from './components/SiteTable.vue'
 
+const Scout = require('./appModules/TableScout')
+
 let overallStats = [
   {
     skill: 'Dominion',
@@ -68,7 +70,7 @@ export default {
   name: 'app',
   data () {
     return {
-      sites: ['Tampa', 'Denver', 'Glendale'],
+      sites: ['Tampa', 'Denver', 'Glendale'],//Scout.getSites(),
       activeSite: 'Overall',
       overallStats
     }
@@ -95,6 +97,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: white;
 }
 
 .summary,
