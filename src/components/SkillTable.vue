@@ -1,9 +1,9 @@
 <template lang="pug">
   .skill-container
-    h4 Disney General
-    .state-container(v-for="state in states")
-      h4 {{ state.name }}
-      .agent-row(v-for="agent in state.agents", :title="agent.name")
+    h4 {{ skillName }}
+    .state-container(v-for="state in states", v-show="getAgentsByState(skillName, state).length > 0")
+      h4 {{ state }}
+      .agent-row(v-for="agent in getAgentsByState(skillName, state)", :title="agent.name")
         .id {{ agent.id }}
         .name {{ agent.name }}
         .time {{ agent.time | timeToString }}
@@ -12,20 +12,22 @@
 </template>
 
 <script>
+const TableScout = require('../appModules/TableScout')
+const Scout = new TableScout()
+
 export default {
-  data() {
-    return {
-      states: [
-        {
-          name: 'ACD',
-          limit: 1000,
-          agents: [
-            {id: 12345, name: 'Agent Very Long Name 1', time: 120000},
-            {id: 74674, name: 'Agent Name 2', time: 3720000},
-            {id: 24738, name: 'Agent Name 3', time: 12345}
-          ]
-        }
-      ]
+  props: {
+    skillName: String,
+    agents: Array
+  },
+  computed: {
+    states: function() {
+      return Scout.getUniqueDataValues('state')
+    }
+  },
+  methods: {
+    getAgentsByState: function(skill, state) {
+      return Scout.getDataRowsBy({skill, state}, this.agents)
     }
   }
 }

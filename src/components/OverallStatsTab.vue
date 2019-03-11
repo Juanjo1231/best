@@ -8,14 +8,16 @@
       tr
         th(v-for="header in headers") {{ header }}
     tbody
-      tr(v-for="stat in stats")
+      tr(v-for="stat in getStats()")
         td(v-for="field in stat") {{ field }}
 </template>
 
 <script>
+const TableScout = require('../appModules/TableScout')
+const Scout = new TableScout()
+
 export default {
   props: {
-    stats: Array,
     activeSite: String
   },
   data () {
@@ -36,6 +38,11 @@ export default {
         'AUX',
         'Ohter'
       ]
+    }
+  },
+  methods: {
+    getStats: function() {
+      return Scout.getSummaryRowsBy()
     }
   }
 }

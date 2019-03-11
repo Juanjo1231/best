@@ -2,7 +2,7 @@
   #app
     tab-bar(:sites="sites", v-on:tab-change="onTabChange")
     .summary
-      overall-stats-tab(:stats="overallStats", :activeSite="activeSite")
+      overall-stats-tab(:activeSite="activeSite")
     .sites-container
       site-table(:activeSite="activeSite")
 </template>
@@ -12,73 +12,50 @@ import TabBar from './components/TabBar.vue'
 import OverallStatsTab from './components/OverallStatsTab.vue'
 import SiteTable from './components/SiteTable.vue'
 
-const Scout = require('./appModules/TableScout')
+const TableScout = require('./appModules/TableScout')
+const Scout = new TableScout()
 
-let overallStats = [
-  {
-    skill: 'Dominion',
-    callsInQueue: 0,
-    answered: 0,
-    abandons: 0,
-    oldestCall: '0:00:00',
-    maxDelay: '0:00:00',
-    avgAnswerSpeed: '00:00',
-    serviceLevel: '99.00%',
-    skilled: 0,
-    available: 0,
-    acw: 0,
-    acd: 0,
-    aux: 0,
-    other: 0
-  },
-  {
-    skill: 'Disney General',
-    callsInQueue: 0,
-    answered: 0,
-    abandons: 0,
-    oldestCall: '0:00:00',
-    maxDelay: '0:00:00',
-    avgAnswerSpeed: '00:00',
-    serviceLevel: '99.00%',
-    skilled: 0,
-    available: 0,
-    acw: 0,
-    acd: 0,
-    aux: 0,
-    other: 0
-  },
-  {
-    skill: 'Tampa Escalations',
-    callsInQueue: 0,
-    answered: 0,
-    abandons: 0,
-    oldestCall: '0:00:00',
-    maxDelay: '0:00:00',
-    avgAnswerSpeed: '00:00',
-    serviceLevel: '99.00%',
-    skilled: 0,
-    available: 0,
-    acw: 0,
-    acd: 0,
-    aux: 0,
-    other: 0
-  }
-]
+function resizeTiles() {
+  let layouts = document.querySelectorAll('.active-masonry-layout')
+  let tiles = document.querySelectorAll('.masonry-item')
+  
+  layouts.forEach(layout => {
+    layout.classList.remove('active-masonry-layout')
+    layout.classList.add('masonry-layout')
+  })
+
+  tiles.forEach(tile => {
+    let rects = tile.getBoundingClientRect()
+    let rows_count = Math.ceil(rects.height/20);
+    tile.style.gridRowEnd = `span ${rows_count}`
+  })
+  
+  layouts = document.querySelectorAll('.masonry-layout')
+  layouts.forEach(layout => {
+    layout.classList.remove('masonry-layout')
+    layout.classList.add('active-masonry-layout')
+  })
+}
 
 export default {
   components: {TabBar, OverallStatsTab, SiteTable},
   name: 'app',
   data () {
     return {
-      sites: ['Tampa', 'Denver', 'Glendale'],//Scout.getSites(),
-      activeSite: 'Overall',
-      overallStats
+      sites: Scout.getUniqueDataValues('site'),
+      activeSite: 'Overall'
     }
   },
   methods: {
     onTabChange: function(site) {
       this.activeSite = site
     }
+  },
+  mounted() {
+    resizeTiles()
+  },
+  updated() {
+    resizeTiles()
   }
 }
 </script>
@@ -104,6 +81,7 @@ body {
   bottom: 0;
   z-index: 100;
   background: white;
+  overflow-y: scroll;
 }
 
 .summary,

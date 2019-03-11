@@ -35,20 +35,20 @@ Scout.prototype.getRows = function () {
     {
       let data = row.children
       summaryRows.push({
-        skill           : data[0].textContent.trim(),
+        skill          : data[0].textContent.trim(),
         callsInQueue   : data[1].textContent.trim(),
         answered       : data[2].textContent.trim(),
         abandons       : data[3].textContent.trim(),
         oldestCall     : data[4].textContent.trim(),
         maxDelay       : data[5].textContent.trim(),
         avgAnswerSpeed : data[6].textContent.trim(),
-        serviceLevel   : data[6].textContent.trim(),
-        skilled        : data[6].textContent.trim(),
-        available      : data[6].textContent.trim(),
-        acw            : data[6].textContent.trim(),
-        acd            : data[6].textContent.trim(),
-        aux            : data[6].textContent.trim(),
-        other          : data[6].textContent.trim()
+        serviceLevel   : data[7].textContent.trim(),
+        skilled        : data[8].textContent.trim(),
+        available      : data[9].textContent.trim(),
+        acw            : data[10].textContent.trim(),
+        acd            : data[11].textContent.trim(),
+        aux            : data[12].textContent.trim(),
+        other          : data[13].textContent.trim()
       })
     }
   })
@@ -78,6 +78,20 @@ Scout.prototype.getDataRowsBy = function(column_filters={}, data_source=this.dat
   })
   return filtered_rows
 }
+
+Scout.prototype.getSummaryRowsBy = function(column_filters={}, data_source=this.summaryRows) {
+  let filtered_rows = []
+  data_source.forEach(row => {
+    for(let key in column_filters) {
+      let value = column_filters[key]
+      if(row[key] != value ) return
+    }
+
+    filtered_rows.push(row)
+  })
+  return filtered_rows
+}
+
 
 Scout.prototype.getUniqueDataValues = function (column, source_data = this.dataRows) {
   if(!column) throw new Error('No column specified')
