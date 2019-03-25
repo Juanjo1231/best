@@ -8,7 +8,7 @@
       tr
         th(v-for="header in headers") {{ header }}
     tbody
-      tr(v-for="stat in getStats()")
+      tr(v-for="stat in siteStats")
         td(v-for="field in stat") {{ field }}
 </template>
 
@@ -40,9 +40,12 @@ export default {
       ]
     }
   },
-  methods: {
-    getStats: function() {
-      return Scout.getSummaryRowsBy()
+  computed: {
+    siteStats: function() {
+      let site = this.activeSite === 'Overall' ? null : this.activeSite
+      let stats = Scout.getSummaryRowsBySite(site)
+      console.log(stats)
+      return stats
     }
   }
 }

@@ -16,7 +16,7 @@ Vue.filter('timeToString', function (value) {
   return hh > 0 ? `${hh}:${mm}:${ss}` : `${mm}:${ss}`
 })
 
-let mainApp = new Vue({
+new Vue({
   el: '#app',
   render: h => h(App)
 })

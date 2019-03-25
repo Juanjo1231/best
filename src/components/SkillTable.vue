@@ -39,11 +39,13 @@ h4 {
   margin: 0;
   padding: 0.5em;
   border-bottom: 1px solid #ccc;
+  background: white;
 }
 .skill-container
  {
   border: 1px solid #ccc;
   display: inline-block;
+  background: white;
   h4 {
     font-size: 14px;
   }
