@@ -1,6 +1,6 @@
 <template lang="pug">
   #app
-    tab-bar(:sites="sites", v-on:tab-change="onTabChange")
+    tab-bar(:sites="sites")
     .summary
       overall-stats-tab(:activeSite="activeSite")
     .sites-container
@@ -11,9 +11,6 @@
 import TabBar from './components/TabBar.vue'
 import OverallStatsTab from './components/OverallStatsTab.vue'
 import SiteTable from './components/SiteTable.vue'
-
-const TableScout = require('./appModules/TableScout')
-const Scout = new TableScout()
 
 function resizeTiles() {
   let layouts = document.querySelectorAll('.active-masonry-layout')
@@ -40,19 +37,24 @@ function resizeTiles() {
 export default {
   components: {TabBar, OverallStatsTab, SiteTable},
   name: 'app',
-  data () {
-    return {
-      sites: Scout.getUniqueDataValues('site'),
-      activeSite: 'Overall'
-    }
-  },
-  methods: {
-    onTabChange: function(site) {
-      this.activeSite = site
+  computed: {
+    sites: function () {
+      return this.$store.state.sites
+    },
+    activeSite: function () {
+      return this.$store.state.activeSite
     }
   },
   mounted() {
     resizeTiles()
+    // DOM MutationObserver
+    let target = document.getElementById('dataTable')
+    let config ={attributes: true, childList: true, subtree: true}
+    let observer = new MutationObserver(ev => {
+      this.$store.commit('updateStats')
+    })
+
+    observer.observe(target, config)
   },
   updated() {
     resizeTiles()
@@ -83,10 +85,8 @@ body {
   background: white;
   overflow-y: scroll;
 }
-
 .summary,
 .sites-container {
   padding: 1em;
 }
-
 </style>

@@ -4,7 +4,7 @@
       tr
         td
         th(colspan=7) Overall Stats
-        th(colspan=6) {{ activeSite }} Stats
+        th(colspan=6) Agent Stats
       tr
         th(v-for="header in headers") {{ header }}
     tbody
@@ -42,10 +42,7 @@ export default {
   },
   computed: {
     siteStats: function() {
-      let site = this.activeSite === 'Overall' ? null : this.activeSite
-      let stats = Scout.getSummaryRowsBySite(site)
-      console.log(stats)
-      return stats
+      return this.$store.state.sumaryData
     }
   }
 }

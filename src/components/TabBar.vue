@@ -17,7 +17,7 @@ export default {
       current_active.classList.remove('active')
       ev.target.classList.add('active')
 
-      this.$emit('tab-change', val)
+      this.$store.commit('changeSite', val)
     }
   }
 }
@@ -38,6 +38,9 @@ export default {
   padding-top: 0.5em;
   display: flex;
   background: #eee;
+  position: sticky;
+  top: 0;
+  left: 0;
 }
 .tab {
   padding: 0.5em 1em 0.2em 1em;

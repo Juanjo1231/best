@@ -7,7 +7,7 @@ class Scout {
     this.dataRows    = []
     this.sites       = []
 
-    this.getRows()
+    this.getRows({data: 'time'})
     this.getUniqueDataValues('site')
     this.getUniqueDataValues('skill')
   }
@@ -31,28 +31,25 @@ Scout.prototype.getRows = function (sortBy) {
     if(row.childElementCount === 12)
     {
       let data = row.children
-      //let time = TimeFormater.stringToMilliseconds(data[6].textContent)
-
-      dataRows.push({
+      let agent_row = {
         id     : data[0].textContent.trim(),
         site   : data[1].textContent.trim(),
         name   : data[2].textContent.trim(),
         state  : data[3].textContent.trim(),
         reason : data[4].textContent.trim(),
         skill  : data[5].textContent.trim(),
-        time   : data[6].textContent//time
-      })
+        time   : TimeFormater.stringToMilliseconds(data[6].textContent)
+      }
+
+      if(agent_row.reason.length > 0) {
+        agent_row.state += ` - ${agent_row.reason}`
+      }
+
+      dataRows.push(agent_row)
     }
     else if(row.childElementCount === 14)
     {
       let data = row.children
-      let timeStrings = [
-        data[4].textContent.trim(),
-        data[5].textContent.trim(),
-        data[6].textContent.trim()
-      ]
-      //let [oldestCall, maxDelay, avgSpeed] = TimeFormater.stringToMilliseconds(timeStrings)
-      
       summaryRows.push({
         skill          : data[0].textContent.trim(),
         callsInQueue   : data[1].textContent.trim(),
@@ -77,21 +74,21 @@ Scout.prototype.getRows = function (sortBy) {
   // Sort dataRows
   if(sortBy && sortBy.data)
   {
-    if(dataRows[0][sortBy])
+    if(dataRows[0][sortBy.data] != undefined)
     {
-      dataRows = this.sortBy(dataRows, sortBy)
+      dataRows = this.sortBy(dataRows, sortBy.data)
     }
   }
   // Sort summaryRows
   if(sortBy && sortBy.summary)
   {
-    if(summaryRows[0][sortBy])
+    if(summaryRows[0][sortBy.summary])
     {
-      summaryRows = this.sortBy(summaryRows, sortBy)
+      summaryRows = this.sortBy(summaryRows, sortBy.summary)
     }
   }
 
-  this.dataRows = dataRows
+  this.dataRows    = dataRows
   this.summaryRows = summaryRows
   return {dataRows, summaryRows}
 }
@@ -104,24 +101,20 @@ Scout.prototype.getRows = function (sortBy) {
  * @returns {Array} Sorted array.
  */
 Scout.prototype.sortBy = function (data, column_name) {
-  data.sort((rowa, rowb) => {
+  return data.sort((rowa, rowb) => {
     if(rowa[column_name] < rowb[column_name]) {
-      return -1
-    } else if(rowa[column_name] > rowb[column_name]) {
       return 1
+    } else if(rowa[column_name] > rowb[column_name]) {
+      return -1
     }
 
     return 0
   })
-
-  return data
 }
 
 Scout.prototype.getDataRowsBy = function(column_filters={}, data_source=this.dataRows) {
   let filtered_rows = []
   data_source.forEach(row => {
-    let valid = true
-
     for(let key in column_filters) {
       let value = column_filters[key]
       if(!row[key].match(value)) {
@@ -166,7 +159,6 @@ Scout.prototype.getSummaryRowsBySite = function(site) {
     return summaryRow
   })
 
-  console.log(all_agents)
   return summary
 }
 

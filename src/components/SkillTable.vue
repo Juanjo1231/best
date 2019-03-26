@@ -1,20 +1,15 @@
 <template lang="pug">
   .skill-container
     h4 {{ skillName }}
-    .state-container(v-for="state in states", v-show="getAgentsByState(skillName, state).length > 0")
-      h4 {{ state }}
+    .state-container(v-for="state in states", v-show="getAgentsByState(skillName, state).length >= 1")
+      h4 {{ state }} ({{ getAgentsByState(skillName, state).length }})
       .agent-row(v-for="agent in getAgentsByState(skillName, state)", :title="agent.name")
         .id {{ agent.id }}
         .name {{ agent.name }}
-        .time {{ agent.time | timeToString }}
-      
-      
+        .time {{ agent.time | timeToString }}  
 </template>
 
 <script>
-const TableScout = require('../appModules/TableScout')
-const Scout = new TableScout()
-
 export default {
   props: {
     skillName: String,
@@ -22,17 +17,16 @@ export default {
   },
   computed: {
     states: function() {
-      return Scout.getUniqueDataValues('state')
+      return this.$store.getters.getSiteStates
     }
   },
   methods: {
     getAgentsByState: function(skill, state) {
-      return Scout.getDataRowsBy({skill, state}, this.agents)
+      return this.$store.getters.getAgentsBySkillByState(skill, state)
     }
   }
 }
 </script>
-
 
 <style lang="scss" scoped>
 h4 {

@@ -8,8 +8,6 @@
 
 <script>
 import SkillTable from './SkillTable.vue'
-const TableScout = require('../appModules/TableScout')
-const Scout = new TableScout()
 
 export default {
   components: {SkillTable},
@@ -18,11 +16,10 @@ export default {
   },
   computed: {
     agents: function() {
-      let filter = this.activeSite === 'Overall' ? {} : {site: this.activeSite}
-      return Scout.getDataRowsBy(filter)
+      return this.$store.getters.getSiteAgents
     },
     skills: function() {
-      return Scout.getUniqueDataValues('skill', this.agents)
+      return this.$store.getters.getSiteSkills
     }
   }
 }
@@ -32,7 +29,6 @@ export default {
 .site-container {
   background: #eee;
 }
-
 h4 {
   border-width: 1px 0;
   border-style: solid;
@@ -40,7 +36,6 @@ h4 {
   padding: 0.5em;
   background: white;
 }
-
 .active-masonry-layout {
   padding: 0.5em;
   display: grid;
@@ -48,4 +43,3 @@ h4 {
   grid-gap: 0.5em;
 }
 </style>
-
